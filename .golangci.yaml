@@ -1,0 +1,33 @@
+run:
+  timeout: 5m
+  tests: false
+linters:
+   enable-all: true
+   disable:
+     - cyclop
+     - depguard
+     - dupl
+     - exhaustruct
+     - forbidigo
+     - forcetypeassert
+     - gci
+     - gochecknoglobals
+     - gochecknoinits
+     - godox
+     - err113
+     - gofumpt
+     - lll
+     - mnd
+     - musttag
+     - nakedret
+     - nlreturn
+     - nolintlint
+     - nonamedreturns
+     - tagliatelle
+     - varnamelen
+     - wrapcheck
+linters-settings:
+   nestif:
+     min-complexity: 4
+   funlen:
+     lines: 80
