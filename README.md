@@ -22,8 +22,7 @@ Alternatively, you can build the binary yourself using the Golang toolchain.
 ```shell
 git clone https://github.com/NETWAYS/check_vspheredb_data --branch=v1.0.0
 cd check_vspheredb_data
-go mod tidy
-go build .
+go build
 ```
 
 The resulting binary `check_vspheredb_data` can be found in the root directory of the repository.
