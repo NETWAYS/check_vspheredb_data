@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/perfdata"
+	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
 )
 
@@ -20,10 +23,11 @@ var datastoreCmd = &cobra.Command{
 	Run: func(_ *cobra.Command, _ []string) {
 		queryDatastore()
 	},
-	PreRun: func(cmd *cobra.Command, _ []string) {
+	PreRun: func(_ *cobra.Command, _ []string) {
 		if datastore == "" {
-			cmd.DisableAutoGenTag = true
-			check.Exitf(check.Unknown, "Error: --datastore flag is required")
+			queryDatastores()
+		} else {
+			queryDatastore()
 		}
 	},
 }
@@ -70,6 +74,86 @@ func queryDatastore() {
 		check.ExitError(err)
 	}
 
+	perfData, statusCode := processQueryResults(datastore, capacity, freeSpace)
+	pl.Add(&perfData)
+
+	dbConnection.Close()
+	check.Exitf(statusCode,
+		"Used storage space for datastore %s: %d%% | %s",
+		datastore,
+		perfData.Value, // this is the used capacity in %
+		pl.String())
+}
+
+func queryDatastores() {
+	var (
+		err           error
+		datastoreName string
+		capacity      int64
+		freeSpace     int64
+	)
+
+	aggregatedResult := result.Overall{}
+
+	// Parse thresholds from given flags.
+	datastoreWarnThreshold, err = check.ParseThreshold(datastoreWarning)
+	if err != nil {
+		check.ExitError(err)
+	}
+
+	datastoreCritThreshold, err = check.ParseThreshold(datastoreCritical)
+	if err != nil {
+		check.ExitError(err)
+	}
+
+	// Collect query results.
+	dbConnection := internal.DBConnection(host, port, username, password, database)
+
+	rows, err := dbConnection.Query(`SELECT o.object_name, ds.capacity, ds.free_space 
+    	FROM datastore ds 
+    	INNER JOIN vcenter vc 
+    	ON ds.vcenter_uuid = vc.instance_uuid 
+    	INNER JOIN object o 
+    	ON ds.uuid = o.uuid
+		WHERE vc.name LIKE ?`,
+		machine)
+	if err != nil {
+		check.ExitError(err)
+	}
+
+	defer rows.Close()
+
+	// Process query results.
+	for rows.Next() {
+		// Read row into variables.
+		if err = rows.Scan(&datastoreName, &capacity, &freeSpace); err != nil {
+			check.ExitError(err)
+		}
+
+		// Calculate results and add perf data to list.
+		perfData, state := processQueryResults(datastoreName, capacity, freeSpace)
+		pl.Add(&perfData)
+
+		// Create PartialResult and add to Overall result.
+		pr := result.PartialResult{
+			Output: fmt.Sprintf("Used storage for datastore %s: %d%%", datastoreName, perfData.Value),
+		}
+		if err = pr.SetState(state); err != nil {
+			check.ExitError(err)
+		}
+
+		aggregatedResult.AddSubcheck(pr)
+	}
+
+	dbConnection.Close()
+
+	fmt.Printf("%s | %s\n\n", aggregatedResult.GetOutput(), pl.String())
+
+	check.ExitRaw(aggregatedResult.GetStatus(), aggregatedResult.GetOutput()+" | "+pl.String()) // ExitRaw because of 'nested formatting issues' otherwise.
+}
+
+// Computes Perfdata, check result based on the queried data.
+func processQueryResults(datastore string, capacity, freeSpace int64) (perfdata.Perfdata, int) {
 	// calculate percentage usage for check result decision.
 	datastoreUsagePercent := int64(0)
 	if capacity != 0 {
@@ -78,13 +162,13 @@ func queryDatastore() {
 
 	// Add Perfdata.
 	// percentage usage.
-	pl.Add(&perfdata.Perfdata{
-		Label: "used",
+	perfData := perfdata.Perfdata{
+		Label: datastore + "_used",
 		Value: datastoreUsagePercent,
 		Uom:   "%",
 		Warn:  datastoreWarnThreshold,
 		Crit:  datastoreCritThreshold,
-	})
+	}
 
 	// Decide on check result state.
 	statusCode := check.OK
@@ -97,10 +181,5 @@ func queryDatastore() {
 		statusCode = check.Critical
 	}
 
-	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Used storage space for datastore %s: %d%% | %s",
-		datastore,
-		datastoreUsagePercent,
-		pl.String())
+	return perfData, statusCode
 }
