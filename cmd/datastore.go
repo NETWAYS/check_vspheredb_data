@@ -132,7 +132,6 @@ func queryDatastores() {
 
 		// Calculate results and add perf data to list.
 		perfData, state := processQueryResults(datastoreName, capacity, freeSpace)
-		pl.Add(&perfData)
 
 		// Create PartialResult and add to Overall result.
 		pr := result.PartialResult{
@@ -142,14 +141,14 @@ func queryDatastores() {
 			check.ExitError(err)
 		}
 
+		pr.Perfdata.Add(&perfData)
+
 		aggregatedResult.AddSubcheck(pr)
 	}
 
 	dbConnection.Close()
 
-	fmt.Printf("%s | %s\n\n", aggregatedResult.GetOutput(), pl.String())
-
-	check.ExitRaw(aggregatedResult.GetStatus(), aggregatedResult.GetOutput()+" | "+pl.String()) // ExitRaw because of 'nested formatting issues' otherwise.
+	check.ExitRaw(aggregatedResult.GetStatus(), aggregatedResult.GetOutput()) // ExitRaw because of 'nested formatting issues' otherwise.
 }
 
 // Computes Perfdata, check result based on the queried data.
