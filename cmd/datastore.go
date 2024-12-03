@@ -140,6 +140,7 @@ func queryDatastores() {
 		if err = pr.SetState(state); err != nil {
 			check.ExitError(err)
 		}
+
 		pr.Perfdata.Add(&perfData)
 
 		aggregatedResult.AddSubcheck(pr)
