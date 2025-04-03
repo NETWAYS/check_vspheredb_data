@@ -1,6 +1,6 @@
 module github.com/NETWAYS/check_vspheredb_data
 
-go 1.22.9
+go 1.24
 
 require github.com/NETWAYS/go-check v0.6.2
 
