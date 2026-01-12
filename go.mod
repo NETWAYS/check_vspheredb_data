@@ -2,7 +2,7 @@ module github.com/NETWAYS/check_vspheredb_data
 
 go 1.24
 
-require github.com/NETWAYS/go-check v0.6.3
+require github.com/NETWAYS/go-check v0.6.4
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
