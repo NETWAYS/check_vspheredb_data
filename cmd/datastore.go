@@ -126,7 +126,8 @@ func queryDatastores() {
 	// Process query results.
 	for rows.Next() {
 		// Read row into variables.
-		if err = rows.Scan(&datastoreName, &capacity, &freeSpace); err != nil {
+		err = rows.Scan(&datastoreName, &capacity, &freeSpace)
+		if err != nil {
 			check.ExitError(err)
 		}
 
@@ -137,7 +138,9 @@ func queryDatastores() {
 		pr := result.PartialResult{
 			Output: fmt.Sprintf("Used storage for datastore %s: %d%%", datastoreName, perfData.Value),
 		}
-		if err = pr.SetState(state); err != nil {
+
+		err = pr.SetState(state)
+		if err != nil {
 			check.ExitError(err)
 		}
 

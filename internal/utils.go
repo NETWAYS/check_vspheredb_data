@@ -1,10 +1,12 @@
 package internal
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/NETWAYS/go-check"
 
@@ -19,7 +21,7 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-// Try to parse a given credentialsFile and write the parsed credentials to
+// ParseCredentialsFile tries to parse a given credentialsFile and write the parsed credentials to
 // `user` and `password` variables
 // Credential files are required to be JSON object of the following spec:
 // `{"username": "vspheredb", "password": "vspheredb"}`
@@ -27,7 +29,8 @@ type Credentials struct {
 // If parsing fails, check exits with UNKNOWN state.
 func ParseCredentialsFile(credentialsFile string, username *string, password *string) {
 	// Check if file exists, exit with UNKNOWN otherwise.
-	if _, err := os.Stat(credentialsFile); os.IsNotExist(err) {
+	_, err := os.Stat(credentialsFile)
+	if os.IsNotExist(err) {
 		check.ExitError(err)
 	}
 
@@ -39,7 +42,9 @@ func ParseCredentialsFile(credentialsFile string, username *string, password *st
 
 	// Parse file contents into known JSON struct.
 	var data Credentials
-	if err := json.Unmarshal(content, &data); err != nil {
+
+	err = json.Unmarshal(content, &data)
+	if err != nil {
 		check.ExitError(err)
 	}
 
@@ -47,7 +52,7 @@ func ParseCredentialsFile(credentialsFile string, username *string, password *st
 	*password = data.Password
 }
 
-// Establishes and checks DB connection and returns the connection.
+// DBConnection establishes and checks DB connection and returns the connection.
 func DBConnection(host string, port int16, username string, password string, database string) *sql.DB {
 	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database)
 
@@ -57,7 +62,11 @@ func DBConnection(host string, port int16, username string, password string, dat
 		check.ExitError(err)
 	}
 	// Test connection.
-	if err := db.Ping(); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = db.PingContext(ctx)
+	if err != nil {
 		check.ExitError(err)
 	}
 

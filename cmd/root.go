@@ -35,10 +35,13 @@ Icinga2 admins to trigger alerts on their side of the monitoring.`,
 	PersistentPreRun: func(cmd *cobra.Command, _ []string) {
 		if machine == "" {
 			cmd.DisableAutoGenTag = true
+
 			check.Exitf(check.Unknown, "Error: --machine flag is required")
 		}
+
 		if host == "" {
 			cmd.DisableAutoGenTag = true
+
 			check.Exitf(check.Unknown, "Error: --host flag is required")
 		}
 		// Parse credentials file.
