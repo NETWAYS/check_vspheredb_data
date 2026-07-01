@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +60,7 @@ func queryTemperature() {
 		check.ExitError(err)
 	}
 
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "temp",
 		Value: currentReading,
 		Uom:   "C",
@@ -78,8 +80,5 @@ func queryTemperature() {
 	}
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Temperature is %d°C | %s",
-		currentReading,
-		pl.String())
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Temperature is %d°C", currentReading))
 }

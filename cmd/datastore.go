@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
 )
@@ -78,11 +78,7 @@ func queryDatastore() {
 	pl.Add(&perfData)
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Used storage space for datastore %s: %d%% | %s",
-		datastore,
-		perfData.Value, // this is the used capacity in %
-		pl.String())
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Used storage space for datastore %s: %d%%", datastore, perfData.Value))
 }
 
 func queryDatastores() {
@@ -135,27 +131,21 @@ func queryDatastores() {
 		perfData, state := processQueryResults(datastoreName, capacity, freeSpace)
 
 		// Create PartialResult and add to Overall result.
-		pr := result.PartialResult{
-			Output: fmt.Sprintf("Used storage for datastore %s: %d%%", datastoreName, perfData.Value),
-		}
-
-		err = pr.SetState(state)
-		if err != nil {
-			check.ExitError(err)
-		}
-
-		pr.Perfdata.Add(&perfData)
+		pr := result.NewPartialResult()
+		pr.SetOutput(fmt.Sprintf("Used storage for datastore %s: %d%%", datastoreName, perfData.Value))
+		pr.SetState(state)
+		pr.AddPerfdata(&perfData)
 
 		aggregatedResult.AddSubcheck(pr)
 	}
 
 	dbConnection.Close()
 
-	check.ExitRaw(aggregatedResult.GetStatus(), aggregatedResult.GetOutput()) // ExitRaw because of 'nested formatting issues' otherwise.
+	check.Exit(aggregatedResult.GetStatus(), aggregatedResult.GetOutput())
 }
 
 // Computes Perfdata, check result based on the queried data.
-func processQueryResults(datastore string, capacity, freeSpace int64) (perfdata.Perfdata, int) {
+func processQueryResults(datastore string, capacity, freeSpace int64) (check.Perfdata, check.Status) {
 	// calculate percentage usage for check result decision.
 	datastoreUsagePercent := int64(0)
 	if capacity != 0 {
@@ -164,7 +154,7 @@ func processQueryResults(datastore string, capacity, freeSpace int64) (perfdata.
 
 	// Add Perfdata.
 	// percentage usage.
-	perfData := perfdata.Perfdata{
+	perfData := check.Perfdata{
 		Label: datastore + "_used",
 		Value: datastoreUsagePercent,
 		Uom:   "%",

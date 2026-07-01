@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -55,7 +57,7 @@ func queryHba() {
 		check.ExitError(err)
 	}
 
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "hbas",
 		Value: hardwareNumHBAs,
 		Warn:  hbaWarnThreshold,
@@ -74,8 +76,5 @@ func queryHba() {
 	}
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Number of HBAs: %d | %s",
-		hardwareNumHBAs,
-		pl.String())
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Number of HBAs: %d", hardwareNumHBAs))
 }

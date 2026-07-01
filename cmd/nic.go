@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -55,7 +57,7 @@ func queryNic() {
 		check.ExitError(err)
 	}
 
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "nics",
 		Value: hardwareNumNICs,
 		Warn:  nicWarnThreshold,
@@ -74,8 +76,5 @@ func queryNic() {
 	}
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Number of NICs: %d | %s",
-		hardwareNumNICs,
-		pl.String())
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Number of NICs: %d)", hardwareNumNICs))
 }

@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -65,13 +67,13 @@ func queryMemory() {
 
 	// Add Perfdata.
 	// total usage.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "usage",
 		Value: overallMemoryUsageMB * 1024 * 1024, // Report in Bytes.
 		Uom:   "B",
 	})
 	// percentage usage.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "usage_percent",
 		Value: memoryUsagePercent,
 		Uom:   "%",
@@ -91,9 +93,5 @@ func queryMemory() {
 	}
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Total Memory usage is %dGB (%d%%) | %s",
-		overallMemoryUsageMB/1024,
-		memoryUsagePercent,
-		pl.String())
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Total Memory usage is %dGB (%d%%)", overallMemoryUsageMB/1024, memoryUsagePercent))
 }
