@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +17,7 @@ var password string
 var credentialsFile string
 
 // Helper vars.
-var pl perfdata.PerfdataList
+var pl check.PerfdataList
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
@@ -36,13 +36,13 @@ Icinga2 admins to trigger alerts on their side of the monitoring.`,
 		if machine == "" {
 			cmd.DisableAutoGenTag = true
 
-			check.Exitf(check.Unknown, "Error: --machine flag is required")
+			check.Exit(check.Unknown, "Error: --machine flag is required")
 		}
 
 		if host == "" {
 			cmd.DisableAutoGenTag = true
 
-			check.Exitf(check.Unknown, "Error: --host flag is required")
+			check.Exit(check.Unknown, "Error: --host flag is required")
 		}
 		// Parse credentials file.
 		if credentialsFile != "" {

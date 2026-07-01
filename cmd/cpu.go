@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/NETWAYS/check_vspheredb_data/internal"
+
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -66,12 +68,12 @@ func queryCPU() {
 
 	// Add Perfdata.
 	// total usage.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "usage",
 		Value: overallCPUUsage,
 	})
 	// usage in percent, including thresholds.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "usage_percent",
 		Value: cpuUsagePercent,
 		Uom:   "%",
@@ -79,12 +81,12 @@ func queryCPU() {
 		Crit:  cpuCritThreshold,
 	})
 	// mhz.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "mhz",
 		Value: hardwareCPUMHz,
 	})
 	// cores.
-	pl.Add(&perfdata.Perfdata{
+	pl.Add(&check.Perfdata{
 		Label: "cores",
 		Value: hardwareCPUCores,
 	})
@@ -101,9 +103,6 @@ func queryCPU() {
 	}
 
 	dbConnection.Close()
-	check.Exitf(statusCode,
-		"Total CPU usage is %dGHz (%d%%) | %s",
-		overallCPUUsage/1024,
-		cpuUsagePercent,
-		pl.String())
+
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Total CPU usage is %dGHz (%d%%)", overallCPUUsage/1024, cpuUsagePercent))
 }
