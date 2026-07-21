@@ -6,11 +6,13 @@ import (
 	"github.com/NETWAYS/check_vspheredb_data/internal"
 
 	"github.com/NETWAYS/go-check"
+	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
 )
 
 var temperatureWarning string
 var temperatureCritical string
+var temperatureSensor string
 var temperatureWarnThreshold *check.Threshold
 var temperatureCritThreshold *check.Threshold
 
@@ -28,15 +30,14 @@ func init() {
 
 	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold as Integer")
 	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold as Integer")
+	temperatureCmd.Flags().StringVarP(&temperatureSensor, "sensor", "s", "%", "Sensor name filter (supports SQL LIKE pattern)")
 }
 
 func queryTemperature() {
 	var (
-		err            error
-		currentReading int64
+		err error
 	)
 
-	// Parse thresholds from given flags.
 	temperatureWarnThreshold, err = check.ParseThreshold(temperatureWarning)
 	if err != nil {
 		check.ExitError(err)
@@ -48,37 +49,62 @@ func queryTemperature() {
 	}
 
 	dbConnection := internal.DBConnection(host, port, username, password, database)
+	defer dbConnection.Close()
 
-	err = dbConnection.QueryRow(`SELECT se.current_reading 
+	rows, err := dbConnection.Query(`SELECT se.name, se.current_reading 
         FROM host_sensor se 
         INNER JOIN host_system hs 
         ON se.host_uuid = hs.uuid 
         WHERE hs.host_name LIKE ?
-		AND se.name LIKE "System Board 1 Inlet Temp"`,
-		machine).Scan(&currentReading)
+		AND se.sensor_type = "temperature"
+		AND se.name LIKE ?`,
+		// AND se.name LIKE "System Board 1 Inlet Temp"`,
+		machine, temperatureSensor)
 	if err != nil {
 		check.ExitError(err)
 	}
+	defer rows.Close()
 
-	pl.Add(&check.Perfdata{
-		Label: "temp",
-		Value: currentReading,
-		Uom:   "C",
-		Warn:  temperatureWarnThreshold,
-		Crit:  temperatureCritThreshold,
-	})
+	o := result.Overall{}
 
-	// Decide on check result state.
-	statusCode := check.OK
+	var sensorCount int
+	var maxTemp int64 = -999
 
-	if temperatureWarnThreshold.DoesViolate(float64(currentReading)) {
-		statusCode = check.Warning
+	for rows.Next() {
+		var sensorName string
+		var currentReading int64
+
+		err := rows.Scan(&sensorName, &currentReading)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		currentReading = currentReading / 100
+		sensorCount++
+		if currentReading > maxTemp {
+			maxTemp = currentReading
+		}
+
+		pr := result.NewPartialResult()
+		pr.SetState(check.OK)
+		if temperatureWarnThreshold.DoesViolate(float64(currentReading)) {
+			pr.SetState(check.Warning)
+		}
+		if temperatureCritThreshold.DoesViolate(float64(currentReading)) {
+			pr.SetState(check.Critical)
+		}
+
+		pr.AddPerfdata(&check.Perfdata{
+			Label: "temp",
+			Value: currentReading,
+			Uom:   "C",
+			Warn:  temperatureWarnThreshold,
+			Crit:  temperatureCritThreshold,
+		})
+
+		pr.SetOutput(fmt.Sprintf("%s is %d°C", sensorName, currentReading))
+
+		o.AddSubcheck(pr)
 	}
-
-	if temperatureCritThreshold.DoesViolate(float64(currentReading)) {
-		statusCode = check.Critical
-	}
-
-	dbConnection.Close()
-	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Temperature is %d°C", currentReading))
+	check.Exit(o.GetStatus(), o.GetOutput())
 }
