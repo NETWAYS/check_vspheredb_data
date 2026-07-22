@@ -30,6 +30,11 @@ Flags:
   -P, --password string           Database password (default "vspheredb")
   -p, --port int16                Database port to connect to (default 3306)
   -u, --username string           Database username (default "vspheredb")
+
+  datastore:
+    -s, --datastore string        Name of the datastore to check
+  temperature:
+    -s, --sensor string           Sensor name filter (supports SQL LIKE pattern)
 ```
 
 ## Development

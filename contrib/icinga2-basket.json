@@ -1,5 +1,5 @@
 {
-    "ExternalCommand": {
+    "Command": {
         "vspheredb_data": {
             "arguments": {
                 "-H": {
@@ -35,42 +35,14 @@
             "fields": [],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_cpu": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
                     "description": "Critical threshold in percent as Integer (defaults to 90)",
                     "value": "$vspheredb_data_cpucrit$"
-                },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
                 },
                 "-w": {
                     "description": "Warning threshold in percent as Integer (defaults to 80)",
@@ -85,48 +57,23 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_cpu",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_datastore": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
                     "description": "Critical threshold in percent as Integer (defaults to 90)",
                     "value": "$vspheredb_data_datastorecrit$"
                 },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
                 "-s": {
                     "description": "Datastore to check",
                     "value": "$vspheredb_data_datastore$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
                 },
                 "-w": {
                     "description": "Warning threshold in percent as Integer (defaults to 80)",
@@ -141,44 +88,19 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_datastore",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_hba": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
                     "description": "Critical threshold as Integer (less than X available) (defaults to 1)",
                     "value": "$vspheredb_data_hbacrit$"
-                },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
                 },
                 "-w": {
                     "description": "Warning threshold as Integer (less than X available) (defaults to 2)",
@@ -193,44 +115,19 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_hba",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_memory": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
                     "description": "Critical threshold in percent as Integer (defaults to 90)",
                     "value": "$vspheredb_data_memorycrit$"
-                },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
                 },
                 "-w": {
                     "description": "Warning threshold in percent as Integer (defaults to 80)",
@@ -245,44 +142,19 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_memory",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_nic": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
                     "description": "Critical threshold as Integer (less than X available) (defaults to 1)",
                     "value": "$vspheredb_data_niccrit$"
-                },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
                 },
                 "-w": {
                     "description": "Warning threshold as Integer (less than X available) (defaults to 2)",
@@ -297,48 +169,27 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_nic",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         },
         "vspheredb_data_temperature": {
             "arguments": {
-                "-H": {
-                    "description": "Database host to connect to",
-                    "value": "$vspheredb_data_dbhost$"
-                },
-                "-P": {
-                    "description": "Database password (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbpass$"
-                },
                 "-c": {
-                    "description": "Critical threshold as Integer (defaults to 60)",
-                    "value": "$vspheredb_data_niccrit$"
+                    "description": "Critical threshold (defaults to 60)",
+                    "value": "$vspheredb_data_tempcrit$"
                 },
-                "-d": {
-                    "description": "Database name (defaults to vspheredb)",
-                    "value": "$vspheredb_data_dbname$"
-                },
-                "-f": {
-                    "description": "Path to the credentials file",
-                    "value": "$vspheredb_data_credfile$"
-                },
-                "-m": {
-                    "description": "Machine to be queried for",
-                    "value": "$host.name$"
-                },
-                "-p": {
-                    "description": "Database port to connecto to (defaults to 3306)",
-                    "value": "$vspheredb_data_dbport$"
-                },
-                "-u": {
-                    "description": "Database username (defaults to vspheredb)",
-                    "value": "$vspheredb_data_username$"
+                "-s": {
+                    "description": "Sensor name filter (supports SQL LIKE pattern)",
+                    "value": "$vspheredb_data_tempsensor$"
                 },
                 "-w": {
-                    "description": "Warning threshold as Integer (less than X available) (defaults to 50)",
-                    "value": "$vspheredb_data_nicwarn$"
+                    "description": "Warning threshold (defaults to 50)",
+                    "value": "$vspheredb_data_tempwarn$"
                 },
                 "mode": {
                     "description": "Checks temperature",
@@ -349,9 +200,12 @@
             },
             "command": "check_vspheredb_data",
             "fields": [],
+            "imports": [
+                "vspheredb_data"
+            ],
             "methods_execute": "PluginCheck",
             "object_name": "vspheredb_data_temperature",
-            "object_type": "external_object",
+            "object_type": "object",
             "timeout": 60
         }
     }
