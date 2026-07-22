@@ -16,19 +16,13 @@ var username string
 var password string
 var credentialsFile string
 
-// Helper vars.
 var pl check.PerfdataList
 
-// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "check_vspheredb_data",
-	Short: "A check plugin for retrieving performance data of vSphere hosts collected by Icingaweb2's vSphereDB modul.",
-	Long: `The vSphereDB module collects lots of useful information and performance data from the vCenters
-it queries, but without proper alert management on the vCenters' side, this information is
-rendered merily cosmetical and not useful for alerting.
-
-This plugin allows to query the collected data via vSphereDB's database tables and enables
-Icinga2 admins to trigger alerts on their side of the monitoring.`,
+	Short: "A check plugin for retrieving performance data of vSphere hosts collected by Icingaweb2's vSphereDB module.",
+	Long: `The vSphereDB module collects performance data from the vCenters it queries, but without proper alert management.
+This plugin allows to query the collected data via vSphereDB's database tables and enables.`,
 
 	// Check global flags - `machine` and `host` need to be set,
 	// and `credentialsFile` needs to be valid if present.

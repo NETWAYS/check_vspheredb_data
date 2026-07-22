@@ -1,39 +1,49 @@
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/NETWAYS/check_vspheredb_data)
-![GitHub](https://img.shields.io/github/license/NETWAYS/check_vspheredb_data)
+# check_vspheredb_data
 
-# README
+An Icinga check plugin to check the performance data gathered by the [Icingaweb2 vSphereDB module](https://github.com/icinga/icingaweb2-module-vspheredb).
 
-`check_vspheredb_data` is a check plugin for checking performance data gathered by the [Icingaweb2 vSphereDB module](https://github.com/icinga/icingaweb2-module-vspheredb)
-against given thresholds written in Go. It is a rewrite of [an older version](https://github.com/NETWAYS/vspheredb-data-check) written in Rust, utilizing the [go-check](https://github.com/NETWAYS/go-check) SDK for monitoring plugins for better maintainability.
-
-It allows for finegrained monitoring of ESXI hosts on Icinga2's side without the need to configure alerting on
-the vCenters' side as vSphereDB's inbuilt mechanisms do.
-
-![screenshot of plugin output](docs/thumbnail.png)
+It allows for monitoring of ESXI hosts on Icinga2's side without the need to configure alerting on the vCenters' side as vSphereDB's inbuilt mechanisms do.
 
 ## Installation
 
 Download a Release binary for your system's architecture from the [Releases](https://github.com/NETWAYS/check_vspheredb_data/releases) page.
 
-## Building the project
+## Usage
 
-Alternatively, you can build the binary yourself using the Golang toolchain.
+```
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  cpu         Checks the current CPU usage
+  datastore   Checks all datastores or a single specified datastore
+  hba         Checks attached HBAs. Uses negative thresholds as parameters, e.g. 10:
+  help        Help about any command
+  memory      Checks the current memory usage
+  nic         Checks the number of attached NICs. Uses negative thresholds as parameters, e.g. 10:
+  temperature Checks the temperature of sensors
+
+Flags:
+  -f, --credentials-file string   Path to the credentials file
+  -d, --database string           Database name (default "vspheredb")
+  -h, --help                      help for check_vspheredb_data
+  -H, --host string               Database host to connect to
+  -m, --machine string            Machine to be queried for
+  -P, --password string           Database password (default "vspheredb")
+  -p, --port int16                Database port to connect to (default 3306)
+  -u, --username string           Database username (default "vspheredb")
+```
+
+## Development
+
+To build the tool yourself using the Golang toolchain:
 
 ```shell
-git clone https://github.com/NETWAYS/check_vspheredb_data --branch=v1.0.0
+git clone https://github.com/NETWAYS/check_vspheredb_data
 cd check_vspheredb_data
 go build
 ```
-
-The resulting binary `check_vspheredb_data` can be found in the root directory of the repository.
-
-## Usage
-
-The check plugin provides detailed information about available check modes (see thumbnail above). More information can be accessed by
-entering `check_vspheredb_data <mode> --help`.
 
 ## License
 
 Copyright© 2024 [NETWAYS GmbH](mailto:info@netways.de)
 
-This check plugin is distributed under the GPL-2.0 or newer license shipped with this repository in the [LICENSE](LICENSE) file.
+This check plugin is distributed under the GPL-3.0 license shipped with this repository in the [LICENSE](LICENSE) file.
