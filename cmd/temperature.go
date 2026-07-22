@@ -19,7 +19,7 @@ var temperatureCritThreshold *check.Threshold
 // temperatureCmd represents the temperature command.
 var temperatureCmd = &cobra.Command{
 	Use:   "temperature",
-	Short: "Checks temperature",
+	Short: "Checks the temperature of sensors",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryTemperature()
 	},
@@ -28,8 +28,8 @@ var temperatureCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(temperatureCmd)
 
-	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold as Integer")
-	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold as Integer")
+	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold")
+	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold")
 	temperatureCmd.Flags().StringVarP(&temperatureSensor, "sensor", "s", "%", "Sensor name filter (supports SQL LIKE pattern)")
 }
 
@@ -51,14 +51,13 @@ func queryTemperature() {
 	dbConnection := internal.DBConnection(host, port, username, password, database)
 	defer dbConnection.Close()
 
-	rows, err := dbConnection.Query(`SELECT se.name, se.current_reading 
-        FROM host_sensor se 
-        INNER JOIN host_system hs 
-        ON se.host_uuid = hs.uuid 
+	rows, err := dbConnection.Query(`SELECT se.name, se.current_reading
+        FROM host_sensor se
+        INNER JOIN host_system hs
+        ON se.host_uuid = hs.uuid
         WHERE hs.host_name LIKE ?
 		AND se.sensor_type = "temperature"
 		AND se.name LIKE ?`,
-		// AND se.name LIKE "System Board 1 Inlet Temp"`,
 		machine, temperatureSensor)
 	if err != nil {
 		check.ExitError(err)
@@ -68,10 +67,12 @@ func queryTemperature() {
 	o := result.Overall{}
 
 	var sensorCount int
+
 	var maxTemp int64 = -999
 
 	for rows.Next() {
 		var sensorName string
+
 		var currentReading int64
 
 		err := rows.Scan(&sensorName, &currentReading)
@@ -79,17 +80,20 @@ func queryTemperature() {
 			check.ExitError(err)
 		}
 
-		currentReading = currentReading / 100
+		currentReading /= 100
 		sensorCount++
+
 		if currentReading > maxTemp {
 			maxTemp = currentReading
 		}
 
 		pr := result.NewPartialResult()
 		pr.SetState(check.OK)
+
 		if temperatureWarnThreshold.DoesViolate(float64(currentReading)) {
 			pr.SetState(check.Warning)
 		}
+
 		if temperatureCritThreshold.DoesViolate(float64(currentReading)) {
 			pr.SetState(check.Critical)
 		}
@@ -102,9 +106,10 @@ func queryTemperature() {
 			Crit:  temperatureCritThreshold,
 		})
 
-		pr.SetOutput(fmt.Sprintf("%s is %d°C", sensorName, currentReading))
+		pr.SetOutput(fmt.Sprintf("%s is %d Celsius", sensorName, currentReading))
 
 		o.AddSubcheck(pr)
 	}
+
 	check.Exit(o.GetStatus(), o.GetOutput())
 }

@@ -14,10 +14,9 @@ var memoryCritical string
 var memoryWarnThreshold *check.Threshold
 var memoryCritThreshold *check.Threshold
 
-// memoryCmd represents the memory command.
 var memoryCmd = &cobra.Command{
 	Use:   "memory",
-	Short: "Checks memory usage",
+	Short: "Checks the current memory usage",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryMemory()
 	},
@@ -26,8 +25,8 @@ var memoryCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(memoryCmd)
 
-	memoryCmd.Flags().StringVarP(&memoryWarning, "warning", "w", "80", "Warning threshold in percent as Integer")
-	memoryCmd.Flags().StringVarP(&memoryCritical, "critical", "c", "90", "Critical threshold in percent as Integer")
+	memoryCmd.Flags().StringVarP(&memoryWarning, "warning", "w", "80", "Warning threshold in percent")
+	memoryCmd.Flags().StringVarP(&memoryCritical, "critical", "c", "90", "Critical threshold in percent")
 }
 
 // Query for memory usage of the given machine, exit with UNKNOWN on query errors.
@@ -52,11 +51,11 @@ func queryMemory() {
 	dbConnection := internal.DBConnection(host, port, username, password, database)
 
 	err = dbConnection.QueryRow(
-		`SELECT hqs.overall_memory_usage_mb, 
-        hs.hardware_memory_size_mb 
-        FROM host_quick_stats hqs 
-        INNER JOIN host_system hs 
-        ON hqs.uuid = hs.uuid 
+		`SELECT hqs.overall_memory_usage_mb,
+        hs.hardware_memory_size_mb
+        FROM host_quick_stats hqs
+        INNER JOIN host_system hs
+        ON hqs.uuid = hs.uuid
         WHERE hs.host_name LIKE ?`, machine).Scan(&overallMemoryUsageMB, &hardwareMemorySizeMB)
 	if err != nil {
 		check.ExitError(err)
@@ -65,14 +64,11 @@ func queryMemory() {
 	// calculate percentage usage for check result decision.
 	memoryUsagePercent := overallMemoryUsageMB * 100 / hardwareMemorySizeMB
 
-	// Add Perfdata.
-	// total usage.
 	pl.Add(&check.Perfdata{
 		Label: "usage",
 		Value: overallMemoryUsageMB * 1024 * 1024, // Report in Bytes.
 		Uom:   "B",
 	})
-	// percentage usage.
 	pl.Add(&check.Perfdata{
 		Label: "usage_percent",
 		Value: memoryUsagePercent,

@@ -14,10 +14,9 @@ var cpuCritical string
 var cpuWarnThreshold *check.Threshold
 var cpuCritThreshold *check.Threshold
 
-// cpuCmd represents the cpu command.
 var cpuCmd = &cobra.Command{
 	Use:   "cpu",
-	Short: "Checks CPU usage",
+	Short: "Checks the current CPU usage",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryCPU()
 	},
@@ -25,8 +24,8 @@ var cpuCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(cpuCmd)
-	cpuCmd.Flags().StringVarP(&cpuWarning, "warning", "w", "80", "Warning threshold in percent as Integer")
-	cpuCmd.Flags().StringVarP(&cpuCritical, "critical", "c", "90", "Critical threshold in percent as Integer")
+	cpuCmd.Flags().StringVarP(&cpuWarning, "warning", "w", "80", "Warning threshold in percent")
+	cpuCmd.Flags().StringVarP(&cpuCritical, "critical", "c", "90", "Critical threshold in percent")
 }
 
 // Query for CPU usage of the given machine, exit with UNKNOWN on query errors.
@@ -52,27 +51,25 @@ func queryCPU() {
 	dbConnection := internal.DBConnection(host, port, username, password, database)
 
 	err = dbConnection.QueryRow(
-		`SELECT hqs.overall_cpu_usage, 
-		hs.hardware_cpu_mhz, 
-		hs.hardware_cpu_cores 
-		FROM host_quick_stats hqs 
-		INNER JOIN host_system hs 
-		ON hqs.uuid = hs.uuid 
+		`SELECT hqs.overall_cpu_usage,
+ 		hs.hardware_cpu_mhz,
+		hs.hardware_cpu_cores
+		FROM host_quick_stats hqs
+		INNER JOIN host_system hs
+		ON hqs.uuid = hs.uuid
 		WHERE hs.host_name LIKE ?`, machine).Scan(&overallCPUUsage, &hardwareCPUMHz, &hardwareCPUCores)
 	if err != nil {
 		check.ExitError(err)
 	}
 
-	// calculate percentage usage for check result decision.
+	// Calculate percentage usage for check result decision.
 	cpuUsagePercent := overallCPUUsage * 100 / (hardwareCPUCores * hardwareCPUMHz)
 
-	// Add Perfdata.
-	// total usage.
+	// Add performance data
 	pl.Add(&check.Perfdata{
 		Label: "usage",
 		Value: overallCPUUsage,
 	})
-	// usage in percent, including thresholds.
 	pl.Add(&check.Perfdata{
 		Label: "usage_percent",
 		Value: cpuUsagePercent,
@@ -80,12 +77,10 @@ func queryCPU() {
 		Warn:  cpuWarnThreshold,
 		Crit:  cpuCritThreshold,
 	})
-	// mhz.
 	pl.Add(&check.Perfdata{
 		Label: "mhz",
 		Value: hardwareCPUMHz,
 	})
-	// cores.
 	pl.Add(&check.Perfdata{
 		Label: "cores",
 		Value: hardwareCPUCores,
