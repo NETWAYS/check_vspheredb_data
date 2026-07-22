@@ -68,7 +68,7 @@ func queryTemperature() {
 
 	var sensorCount int
 
-	var maxTemp int64 = -999
+	var maxTemp int64
 
 	for rows.Next() {
 		var sensorName string
@@ -80,6 +80,7 @@ func queryTemperature() {
 			check.ExitError(err)
 		}
 
+		// The division by 100 is necessary here, to do the temperature calculation and output correctly - otherwise we would have wrong temperature results, because vsphereDB saves the temperatures to its database without any separators.
 		currentReading /= 100
 		sensorCount++
 
