@@ -16,10 +16,9 @@ var datastoreWarnThreshold *check.Threshold
 var datastoreCritThreshold *check.Threshold
 var datastore string
 
-// datastoreCmd represents the datastore command.
 var datastoreCmd = &cobra.Command{
 	Use:   "datastore",
-	Short: "Checks all datastores or a singular, specified datastore",
+	Short: "Checks all datastores or a single specified datastore",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryDatastore()
 	},
@@ -35,9 +34,9 @@ var datastoreCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(datastoreCmd)
 
-	datastoreCmd.Flags().StringVarP(&datastoreWarning, "warning", "w", "80", "Warning threshold in percent as Integer")
-	datastoreCmd.Flags().StringVarP(&datastoreCritical, "critical", "c", "90", "Critical threshold in percent as Integer")
-	datastoreCmd.Flags().StringVarP(&datastore, "datastore", "s", "", "Datastore to check")
+	datastoreCmd.Flags().StringVarP(&datastoreWarning, "warning", "w", "80", "Warning threshold in percent")
+	datastoreCmd.Flags().StringVarP(&datastoreCritical, "critical", "c", "90", "Critical threshold in percent")
+	datastoreCmd.Flags().StringVarP(&datastore, "datastore", "s", "", "Name of the datastore to check")
 }
 
 func queryDatastore() {
@@ -60,11 +59,11 @@ func queryDatastore() {
 
 	dbConnection := internal.DBConnection(host, port, username, password, database)
 
-	err = dbConnection.QueryRow(`SELECT ds.capacity, ds.free_space 
-    	FROM datastore ds 
-    	INNER JOIN vcenter vc 
-    	ON ds.vcenter_uuid = vc.instance_uuid 
-    	INNER JOIN object o 
+	err = dbConnection.QueryRow(`SELECT ds.capacity, ds.free_space
+    	FROM datastore ds
+    	INNER JOIN vcenter vc
+    	ON ds.vcenter_uuid = vc.instance_uuid
+    	INNER JOIN object o
     	ON ds.uuid = o.uuid
 		WHERE o.object_name LIKE ?
 		AND vc.name LIKE ?`,
@@ -105,11 +104,11 @@ func queryDatastores() {
 	// Collect query results.
 	dbConnection := internal.DBConnection(host, port, username, password, database)
 
-	rows, err := dbConnection.Query(`SELECT o.object_name, ds.capacity, ds.free_space 
-    	FROM datastore ds 
-    	INNER JOIN vcenter vc 
-    	ON ds.vcenter_uuid = vc.instance_uuid 
-    	INNER JOIN object o 
+	rows, err := dbConnection.Query(`SELECT o.object_name, ds.capacity, ds.free_space
+    	FROM datastore ds
+    	INNER JOIN vcenter vc
+    	ON ds.vcenter_uuid = vc.instance_uuid
+    	INNER JOIN object o
     	ON ds.uuid = o.uuid
 		WHERE vc.name LIKE ?`,
 		machine)
@@ -147,13 +146,13 @@ func queryDatastores() {
 // Computes Perfdata, check result based on the queried data.
 func processQueryResults(datastore string, capacity, freeSpace int64) (check.Perfdata, check.Status) {
 	// calculate percentage usage for check result decision.
-	datastoreUsagePercent := int64(0)
+	var datastoreUsagePercent int64
+
 	if capacity != 0 {
 		datastoreUsagePercent = (capacity - freeSpace) * 100 / capacity
 	}
 
-	// Add Perfdata.
-	// percentage usage.
+	// Add performance data
 	perfData := check.Perfdata{
 		Label: datastore + "_used",
 		Value: datastoreUsagePercent,
