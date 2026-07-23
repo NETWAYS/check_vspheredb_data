@@ -30,7 +30,7 @@ func init() {
 
 	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold")
 	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold")
-	temperatureCmd.Flags().StringVarP(&temperatureSensor, "sensor", "s", "%", "Sensor name filter (supports SQL LIKE pattern)")
+	temperatureCmd.Flags().StringVarP(&temperatureSensor, "sensor", "", "%", "Sensor name filter (supports SQL LIKE pattern)")
 }
 
 func queryTemperature() {
