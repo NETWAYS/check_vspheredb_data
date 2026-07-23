@@ -32,9 +32,9 @@ Flags:
   -u, --username string           Database username (default "vspheredb")
 
   datastore:
-    -s, --datastore string        Name of the datastore to check
+    --datastore string            Name of the datastore to check
   temperature:
-    -s, --sensor string           Sensor name filter (supports SQL LIKE pattern)
+    --sensor string               Sensor name filter (supports SQL LIKE pattern)
 ```
 
 ## Development

@@ -36,7 +36,7 @@ func init() {
 
 	datastoreCmd.Flags().StringVarP(&datastoreWarning, "warning", "w", "80", "Warning threshold in percent")
 	datastoreCmd.Flags().StringVarP(&datastoreCritical, "critical", "c", "90", "Critical threshold in percent")
-	datastoreCmd.Flags().StringVarP(&datastore, "datastore", "s", "", "Name of the datastore to check")
+	datastoreCmd.Flags().StringVarP(&datastore, "datastore", "", "", "Name of the datastore to check")
 }
 
 func queryDatastore() {
