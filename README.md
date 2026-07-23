@@ -47,6 +47,13 @@ cd check_vspheredb_data
 go build
 ```
 
+The repository contains example SQL data to test the plugin against:
+
+```
+podman run -ti --rm -p 3306:3306 \
+  -e MYSQL_DATABASE=example -e MYSQL_USER=example -e MYSQL_PASSWORD=example -e MYSQL_ROOT_PASSWORD=example \
+  -v $(pwd)/testdata/:/docker-entrypoint-initdb.d docker.io/mariadb:latest
+```
 ## License
 
 Copyright© 2024 [NETWAYS GmbH](mailto:info@netways.de)
