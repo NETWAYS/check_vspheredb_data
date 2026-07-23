@@ -6,7 +6,27 @@ It allows for monitoring of ESXI hosts on Icinga2's side without the need to con
 
 ## Installation
 
-Download a Release binary for your system's architecture from the [Releases](https://github.com/NETWAYS/check_vspheredb_data/releases) page.
+You can install the plugin from our official package server [packages.netways.de](https://packages.netways.de).
+
+Installation guides for the repository can be found here:
+
+RHEL: [Plugins/EPEL](https://packages.netways.de/plugins/epel/)
+
+Debian: [Plugins/DEB](https://packages.netways.de/plugins/debian/)
+
+Ubuntu: [Plugins/Ubuntu](https://packages.netways.de/plugins/ubuntu/)
+
+After that install the package via your package manager:
+
+**RHEL:**
+
+`sudo dnf install netways-plugins-vspheredb-data`
+
+**Debian/Ubuntu:**
+
+`sudo apt install netways-plugins-vspheredb-data`
+
+Or download a Release binary for your system's architecture from the [Releases](https://github.com/NETWAYS/check_vspheredb_data/releases) page.
 
 ## Usage
 
