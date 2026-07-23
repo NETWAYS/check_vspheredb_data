@@ -71,7 +71,7 @@
                     "description": "Critical threshold in percent as Integer (defaults to 90)",
                     "value": "$vspheredb_data_datastorecrit$"
                 },
-                "-s": {
+                "--datastore": {
                     "description": "Datastore to check",
                     "value": "$vspheredb_data_datastore$"
                 },
@@ -183,7 +183,7 @@
                     "description": "Critical threshold (defaults to 60)",
                     "value": "$vspheredb_data_tempcrit$"
                 },
-                "-s": {
+                "--sensor": {
                     "description": "Sensor name filter (supports SQL LIKE pattern)",
                     "value": "$vspheredb_data_tempsensor$"
                 },
