@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/NETWAYS/go-check v1.0.0
-	github.com/go-sql-driver/mysql v1.10.0
+	github.com/go-sql-driver/mysql v1.10.1
 	github.com/spf13/cobra v1.10.2
 )
 
