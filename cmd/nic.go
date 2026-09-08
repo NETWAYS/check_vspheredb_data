@@ -75,5 +75,5 @@ func queryNic() {
 	}
 
 	dbConnection.Close()
-	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Number of NICs: %d)", hardwareNumNICs))
+	check.ExitWithPerfdata(statusCode, pl, fmt.Sprintf("Number of NICs: %d", hardwareNumNICs))
 }
