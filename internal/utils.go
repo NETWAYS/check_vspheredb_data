@@ -60,7 +60,7 @@ func ParseCredentialsFile(credentialsFile string, username *string, password *st
 func DBConnection(host string, port int16, username string, password string, database string, usetls bool, cacertPath string, clientCertPath string, clientKeyPath string) *sql.DB {
 	var connStr string
 
-	if usetls {
+	if usetls { //nolint:nestif
 		TLSConfig := tls.Config{}
 		complexConfig := false
 
