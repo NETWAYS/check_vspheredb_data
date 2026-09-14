@@ -2,14 +2,18 @@ package internal
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
 
 	"github.com/NETWAYS/go-check"
 
+	"github.com/go-sql-driver/mysql"
 	// needed to use the MySQL driver for the sql module.
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -53,8 +57,56 @@ func ParseCredentialsFile(credentialsFile string, username *string, password *st
 }
 
 // DBConnection establishes and checks DB connection and returns the connection.
-func DBConnection(host string, port int16, username string, password string, database string) *sql.DB {
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database)
+func DBConnection(host string, port int16, username string, password string, database string, usetls bool, cacertPath string, clientCertPath string, clientKeyPath string) *sql.DB {
+	var connStr string
+
+	if usetls {
+		TLSConfig := tls.Config{}
+		complexConfig := false
+
+		if cacertPath != "" {
+			rootCertPool := x509.NewCertPool()
+
+			pem, err := os.ReadFile(cacertPath)
+			if err != nil {
+				check.ExitError(err)
+			}
+
+			if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
+				check.ExitError(errors.New("failed to append PEM"))
+			}
+
+			TLSConfig.RootCAs = rootCertPool
+			complexConfig = true
+		}
+
+		if clientCertPath != "" && clientKeyPath != "" {
+			clientCert := make([]tls.Certificate, 0, 1)
+
+			certs, err := tls.LoadX509KeyPair(clientCertPath, clientKeyPath)
+			if err != nil {
+				check.ExitError(err)
+			}
+
+			clientCert = append(clientCert, certs)
+
+			TLSConfig.Certificates = clientCert
+			complexConfig = true
+		}
+
+		err := mysql.RegisterTLSConfig("custom", &TLSConfig)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		if complexConfig {
+			connStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?tls=custom", username, password, host, port, database)
+		} else {
+			connStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?tls=true", username, password, host, port, database)
+		}
+	} else {
+		connStr = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database)
+	}
 
 	// Open connection.
 	db, err := sql.Open("mysql", connStr)

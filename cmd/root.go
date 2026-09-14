@@ -16,6 +16,11 @@ var username string
 var password string
 var credentialsFile string
 
+var useTLS bool
+var caCertPath string
+var clientCertPath string
+var clientCertKey string
+
 var pl check.PerfdataList
 
 var rootCmd = &cobra.Command{
@@ -57,4 +62,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&username, "username", "u", "vspheredb", "Database username")
 	rootCmd.PersistentFlags().StringVarP(&password, "password", "P", "vspheredb", "Database password")
 	rootCmd.PersistentFlags().StringVarP(&credentialsFile, "credentials-file", "f", "", "Path to the credentials file")
+	rootCmd.PersistentFlags().BoolVar(&useTLS, "tls", false, "Use TLS to connect to the database")
+	rootCmd.PersistentFlags().StringVar(&caCertPath, "ca-cert", "", "CA certificate (file path)")
+	rootCmd.PersistentFlags().StringVar(&clientCertPath, "client-cert", "", "Client certificate (file path)")
+	rootCmd.PersistentFlags().StringVar(&clientCertKey, "client-key", "", "Client certificate key (file path)")
 }
