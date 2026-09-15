@@ -34,8 +34,8 @@ var datastoreCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(datastoreCmd)
 
-	datastoreCmd.Flags().StringVarP(&datastoreWarning, "warning", "w", "80", "Warning threshold in percent")
-	datastoreCmd.Flags().StringVarP(&datastoreCritical, "critical", "c", "90", "Critical threshold in percent")
+	datastoreCmd.Flags().StringVarP(&datastoreWarning, "warning", "w", "80", "Warning threshold range in percent")
+	datastoreCmd.Flags().StringVarP(&datastoreCritical, "critical", "c", "90", "Critical threshold range in percent")
 	datastoreCmd.Flags().StringVarP(&datastore, "datastore", "", "", "Name of the datastore to check")
 }
 

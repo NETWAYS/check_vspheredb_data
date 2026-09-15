@@ -24,8 +24,8 @@ var cpuCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(cpuCmd)
-	cpuCmd.Flags().StringVarP(&cpuWarning, "warning", "w", "80", "Warning threshold in percent")
-	cpuCmd.Flags().StringVarP(&cpuCritical, "critical", "c", "90", "Critical threshold in percent")
+	cpuCmd.Flags().StringVarP(&cpuWarning, "warning", "w", "80", "Warning threshold range in percent")
+	cpuCmd.Flags().StringVarP(&cpuCritical, "critical", "c", "90", "Critical threshold range in percent")
 }
 
 // Query for CPU usage of the given machine, exit with UNKNOWN on query errors.

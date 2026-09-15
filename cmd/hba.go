@@ -16,7 +16,7 @@ var hbaCritThreshold *check.Threshold
 
 var hbaCmd = &cobra.Command{
 	Use:   "hba",
-	Short: "Checks attached HBAs. Uses negative thresholds as parameters, e.g. 10:",
+	Short: "Checks attached HBAs. Uses threshold ranges as parameters, e.g. 10:",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryHba()
 	},
@@ -25,8 +25,8 @@ var hbaCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(hbaCmd)
 
-	hbaCmd.Flags().StringVarP(&hbaWarning, "warning", "w", "2:", "Warning threshold (\"less than X available\")")
-	hbaCmd.Flags().StringVarP(&hbaCritical, "critical", "c", "1:", "Critical threshold (\"less than X available\")")
+	hbaCmd.Flags().StringVarP(&hbaWarning, "warning", "w", "2:", "Warning threshold range")
+	hbaCmd.Flags().StringVarP(&hbaCritical, "critical", "c", "1:", "Critical threshold range")
 }
 
 func queryHba() {

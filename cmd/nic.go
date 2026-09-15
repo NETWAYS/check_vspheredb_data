@@ -16,7 +16,7 @@ var nicCritThreshold *check.Threshold
 
 var nicCmd = &cobra.Command{
 	Use:   "nic",
-	Short: "Checks the number of attached NICs. Uses negative thresholds as parameters, e.g. 10:",
+	Short: "Checks the number of attached NICs. Uses threshold ranges as parameters, e.g. 10:",
 	Run: func(_ *cobra.Command, _ []string) {
 		queryNic()
 	},
@@ -25,8 +25,8 @@ var nicCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(nicCmd)
 
-	nicCmd.Flags().StringVarP(&nicWarning, "warning", "w", "2:", "Warning threshold (\"less than X available\")")
-	nicCmd.Flags().StringVarP(&nicCritical, "critical", "c", "1:", "Critical threshold (\"less than X available\")")
+	nicCmd.Flags().StringVarP(&nicWarning, "warning", "w", "2:", "Warning threshold range")
+	nicCmd.Flags().StringVarP(&nicCritical, "critical", "c", "1:", "Critical threshold range")
 }
 
 func queryNic() {

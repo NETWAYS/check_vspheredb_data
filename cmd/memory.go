@@ -25,8 +25,8 @@ var memoryCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(memoryCmd)
 
-	memoryCmd.Flags().StringVarP(&memoryWarning, "warning", "w", "80", "Warning threshold in percent")
-	memoryCmd.Flags().StringVarP(&memoryCritical, "critical", "c", "90", "Critical threshold in percent")
+	memoryCmd.Flags().StringVarP(&memoryWarning, "warning", "w", "80", "Warning threshold range in percent")
+	memoryCmd.Flags().StringVarP(&memoryCritical, "critical", "c", "90", "Critical threshold range in percent")
 }
 
 // Query for memory usage of the given machine, exit with UNKNOWN on query errors.
