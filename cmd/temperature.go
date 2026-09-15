@@ -48,7 +48,7 @@ func queryTemperature() {
 		check.ExitError(err)
 	}
 
-	dbConnection := internal.DBConnection(host, port, username, password, database)
+	dbConnection := internal.DBConnection(host, port, username, password, database, useTLS, caCertPath, clientCertPath, clientCertKey)
 	defer dbConnection.Close()
 
 	rows, err := dbConnection.Query(`SELECT se.name, se.current_reading

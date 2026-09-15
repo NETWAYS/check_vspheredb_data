@@ -48,7 +48,7 @@ func queryMemory() {
 		check.ExitError(err)
 	}
 
-	dbConnection := internal.DBConnection(host, port, username, password, database)
+	dbConnection := internal.DBConnection(host, port, username, password, database, useTLS, caCertPath, clientCertPath, clientCertKey)
 
 	err = dbConnection.QueryRow(
 		`SELECT hqs.overall_memory_usage_mb,

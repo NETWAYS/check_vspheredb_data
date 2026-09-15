@@ -57,7 +57,7 @@ func queryDatastore() {
 		check.ExitError(err)
 	}
 
-	dbConnection := internal.DBConnection(host, port, username, password, database)
+	dbConnection := internal.DBConnection(host, port, username, password, database, useTLS, caCertPath, clientCertPath, clientCertKey)
 
 	err = dbConnection.QueryRow(`SELECT ds.capacity, ds.free_space
     	FROM datastore ds
@@ -102,7 +102,7 @@ func queryDatastores() {
 	}
 
 	// Collect query results.
-	dbConnection := internal.DBConnection(host, port, username, password, database)
+	dbConnection := internal.DBConnection(host, port, username, password, database, useTLS, caCertPath, clientCertPath, clientCertKey)
 
 	rows, err := dbConnection.Query(`SELECT o.object_name, ds.capacity, ds.free_space
     	FROM datastore ds

@@ -46,7 +46,7 @@ func queryNic() {
 		check.ExitError(err)
 	}
 
-	dbConnection := internal.DBConnection(host, port, username, password, database)
+	dbConnection := internal.DBConnection(host, port, username, password, database, useTLS, caCertPath, clientCertPath, clientCertKey)
 
 	err = dbConnection.QueryRow(`SELECT hardware_num_nic
             FROM host_system
