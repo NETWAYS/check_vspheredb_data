@@ -28,8 +28,8 @@ var temperatureCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(temperatureCmd)
 
-	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold")
-	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold")
+	temperatureCmd.Flags().StringVarP(&temperatureWarning, "warning", "w", "50", "Warning threshold range")
+	temperatureCmd.Flags().StringVarP(&temperatureCritical, "critical", "c", "60", "Critical threshold range")
 	temperatureCmd.Flags().StringVarP(&temperatureSensor, "sensor", "", "%", "Sensor name filter (supports SQL LIKE pattern)")
 }
 
