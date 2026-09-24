@@ -42,6 +42,9 @@ Available Commands:
   temperature Checks the temperature of sensors
 
 Flags:
+      --ca-cert string            CA certificate (file path)
+      --client-cert string        Client certificate (file path)
+      --client-key string         Client certificate key (file path)
   -f, --credentials-file string   Path to the credentials file
   -d, --database string           Database name (default "vspheredb")
   -h, --help                      help for check_vspheredb_data
@@ -49,6 +52,7 @@ Flags:
   -m, --machine string            Machine to be queried for
   -P, --password string           Database password (default "vspheredb")
   -p, --port int16                Database port to connect to (default 3306)
+      --tls                       Use TLS to connect to the database
   -u, --username string           Database username (default "vspheredb")
 
   datastore:
