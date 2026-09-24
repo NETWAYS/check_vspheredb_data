@@ -29,6 +29,25 @@
                 "-u": {
                     "description": "Database username (defaults to vspheredb)",
                     "value": "$vspheredb_data_username$"
+                },
+                "--ca-cert": {
+                    "description": "CA certificate (file path)",
+                    "value": "$vspheredb_data_cacert"
+                },
+                "--client-cert": {
+                    "description": "Client certificate (file path)",
+                    "value": "$vspheredb_data_clientcert"
+                },
+                "--client-key": {
+                    "description": "Client certificate key (file path)",
+                    "value": "$vspheredb_data_clientkey"
+                },
+                "tls_mode": {
+                    "required": false,
+                    "set_if": "$vspheredb_data_tls$",
+                    "set_if_format": "string",
+                    "skip_key": true,
+                    "value": "--tls"
                 }
             },
             "command": "check_vspheredb_data",
