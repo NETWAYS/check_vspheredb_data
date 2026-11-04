@@ -45,7 +45,7 @@ Flags:
       --ca-cert string            CA certificate (file path)
       --client-cert string        Client certificate (file path)
       --client-key string         Client certificate key (file path)
-  -f, --credentials-file string   Path to the credentials file
+  -f, --credentials-file string   Path to the credentials JSON file (file path)
   -d, --database string           Database name (default "vspheredb")
   -h, --help                      help for check_vspheredb_data
   -H, --host string               Database host to connect to
