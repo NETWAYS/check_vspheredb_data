@@ -61,6 +61,15 @@ Flags:
     --sensor string               Sensor name filter (supports SQL LIKE pattern)
 ```
 
+## Credentials File
+To use the credentials-file feature, you need to have an appropiate file in the JSON Format:
+```
+{
+  "username": "vspheredb",
+  "password": "vspheredb"
+}
+```
+
 ## Development
 
 To build the tool yourself using the Golang toolchain:
