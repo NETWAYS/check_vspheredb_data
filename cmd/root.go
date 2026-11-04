@@ -61,7 +61,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&database, "database", "d", "vspheredb", "Database name")
 	rootCmd.PersistentFlags().StringVarP(&username, "username", "u", "vspheredb", "Database username")
 	rootCmd.PersistentFlags().StringVarP(&password, "password", "P", "vspheredb", "Database password")
-	rootCmd.PersistentFlags().StringVarP(&credentialsFile, "credentials-file", "f", "", "Path to the credentials file in json format")
+	rootCmd.PersistentFlags().StringVarP(&credentialsFile, "credentials-file", "f", "", "Path to the credentials file in the JSON format")
 	rootCmd.PersistentFlags().BoolVar(&useTLS, "tls", false, "Use TLS to connect to the database")
 	rootCmd.PersistentFlags().StringVar(&caCertPath, "ca-cert", "", "CA certificate (file path)")
 	rootCmd.PersistentFlags().StringVar(&clientCertPath, "client-cert", "", "Client certificate (file path)")
