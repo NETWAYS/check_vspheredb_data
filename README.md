@@ -45,7 +45,7 @@ Flags:
       --ca-cert string            CA certificate (file path)
       --client-cert string        Client certificate (file path)
       --client-key string         Client certificate key (file path)
-  -f, --credentials-file string   Path to the credentials file
+  -f, --credentials-file string   Path to the credentials JSON file (file path)
   -d, --database string           Database name (default "vspheredb")
   -h, --help                      help for check_vspheredb_data
   -H, --host string               Database host to connect to
@@ -59,6 +59,15 @@ Flags:
     --datastore string            Name of the datastore to check
   temperature:
     --sensor string               Sensor name filter (supports SQL LIKE pattern)
+```
+
+## Credentials File
+To use the credentials-file feature, you need to have an appropiate file in the JSON Format:
+```
+{
+  "username": "vspheredb",
+  "password": "vspheredb"
+}
 ```
 
 ## Development
