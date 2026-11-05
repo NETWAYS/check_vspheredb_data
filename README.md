@@ -49,7 +49,7 @@ Flags:
   -d, --database string           Database name (default "vspheredb")
   -h, --help                      help for check_vspheredb_data
   -H, --host string               Database host to connect to
-  -m, --machine string            Machine to be queried for
+  -m, --machine string            vCenter name (for datastore checks)
   -P, --password string           Database password (default "vspheredb")
   -p, --port int16                Database port to connect to (default 3306)
       --tls                       Use TLS to connect to the database
@@ -68,6 +68,13 @@ To use the credentials-file feature, you need to have an appropiate file in the 
   "username": "vspheredb",
   "password": "vspheredb"
 }
+```
+## Datastore Check – Machine Parameter
+
+For datastore checks, `--machine` expects the vCenter name. The datastore name is specified separately using `--datastore`.
+
+```
+check_vspheredb_data datastore -m "vcenter.example.com" --datastore "datastore01"
 ```
 
 ## Development
